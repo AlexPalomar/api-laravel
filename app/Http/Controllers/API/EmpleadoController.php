@@ -66,12 +66,12 @@ class EmpleadoController extends Controller
             $letraMayorDeColumna = $hojaActual->getHighestColumn(); // Letra
             # Convertir la letra al número de columna correspondiente
             $numeroMayorDeColumna = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($letraMayorDeColumna);
-            // echo "<table border='true'>";
+            
 
             # Iterar filas con ciclo for e índices
             for ($indiceFila = 2; $indiceFila <= $numeroMayorDeFila; $indiceFila++) {
                 $maxfila = $indiceFila-1; // obteniendo valor maximo de las filas
-                // echo    "<tr>";
+                
                 for ($indiceColumna = 1; $indiceColumna <= $numeroMayorDeColumna; $indiceColumna++) {
                     # Obtener celda por columna y fila
                     $celda = $hojaActual->getCellByColumnAndRow($indiceColumna, $indiceFila);
@@ -94,32 +94,24 @@ class EmpleadoController extends Controller
                     // echo "Formateado es: <strong>$valorFormateado</strong>. ";
                     // echo "Calculado es: <strong>$valorCalculado</strong><br><br>";
 
-                    // echo        "<td>$valorRaw</td>";
-
                     $item1[] =  $valorRaw;
                 }
-                // echo    "</tr>";
-                $item2[] = array($indiceFila-2 => $item1);
+                
             }
-            // echo "</table>";
-        }
-       
-        # extrae el ultimo elemento de array 
-        $ultimoElemento = end($item2);
-        # saca la cantidad de elmentos del array item2 y le resta uno para sacar la pocision del elemento
-        $conteoElementos = count($item2)-1;
-        $conteoSubElementos = count($ultimoElemento[$conteoElementos]);
-        
-        for($index=-0; $index<=$conteoSubElementos; $index++){
-
-            if($index<=$conteoSubElementos){
-                $newI = $this->getIterador()+6;
-                $this->setIterador($newI);
-            }
-            # extrae de 6 en 6 los elementos del array $ultimoElemento con cada iteracion.
-            $dato1[] = array_slice($ultimoElemento[$conteoElementos], $this->getIterador(),6);
             
-            // se valida donde el array esta vacio y finaliza la insercion en la base de datos.
+        }
+        
+        $conteoSubElementos = count($item1)-1;
+
+        for($index=-0; $index<=$conteoSubElementos; $index++){
+            #se usa getter and setter del atributo iterador para iterar de 6 en 6 con cada ciclo
+            $newI = $this->getIterador()+6;
+            $this->setIterador($newI);
+
+            # extrae de 6 en 6 los elementos del array $ultimoElemento con cada iteracion.
+            $dato1[] = array_slice($item1, $this->getIterador(),6);
+            
+            // se valida donde el array esta vacio y finaliza la insercion a la base de datos.
             if($dato1[$index] != []){
 
                 $empleadoQuery = Empleado::all();
@@ -133,10 +125,10 @@ class EmpleadoController extends Controller
                     }
 
                     if($empleadoQuery[0][$i] == $dato1[0][0]){
-                        echo 'son iguales';
+                        // echo 'son iguales';
                     }
                 }
-                echo $empleadoQuery[0][1];
+                
                 // return response()->json($empleadoQuery[0][1]);
                 
                 #insercion de datos en campos en especifico en la base de datos.
@@ -149,7 +141,7 @@ class EmpleadoController extends Controller
             }
 
         }
-        
+        return $empleadoQuery[0][1];
         // return response()->json(array('msg'=>'ok'));
         
     }
