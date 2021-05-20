@@ -113,35 +113,51 @@ class EmpleadoController extends Controller
             
             // se valida donde el array esta vacio y finaliza la insercion a la base de datos.
             if($dato1[$index] != []){
+                
+                # validamos con elnumero de identificacion si el registro del excel ya esta en la base de datos, y si no esta crea un registro nuevo.
+                #insercion de datos en campos en especifico en la base de datos.
+                $oldEmpleado = Empleado::where('identificacion', $dato1[$index][0])->first();
+                
+                switch(isset($newEmpleado->identificacion)){
+                    case false:
+                        $newEmpleado = new Empleado();
+                        $newEmpleado->identificacion = $dato1[$index][0];
+                        $newEmpleado->nombre = $dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3];
+                        $newEmpleado->cargo = $dato1[$index][4];
+                        $newEmpleado->correo = $dato1[$index][5];
+                        $newEmpleado->save();
+                    
+                    case true:
+                        
+                        # por medio de estos condicionales anidados validamos si algun campo del registro recuperado de la base de datos es diferente, incluyendo campos nulos y si son nulos o diferentes los va a actualizar con los datos extraidos del excel.
+                        if($dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3] != $oldEmpleado['nombre']){
+                            $oldEmpleado->nombre = $dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3];
+                        }else if($dato1[$index][4] != $oldEmpleado['cargo']){
+                            $oldEmpleado->cargo = $dato1[$index][4];
+                        }else if($dato1[$index][5] != $oldEmpleado['correo']){
+                            $newEmpleado->correo = $dato1[$index][5];
+                            $oldEmpleado->save();
+                        }
 
-                $empleadoQuery = Empleado::all();
-                # obtenemos cantidad de registros que hay en la base de datos
-                $conteoRegistrosDB = count($empleadoQuery)-1;
-                # validamos si el registro ya esta en la base de datos comparandolo con el excel.
-                for($i=-0; $i<=$conteoRegistrosDB; $i++){
-
-                    foreach ($empleadoQuery as $valor){
-                        // echo $valor.'<br>';
-                    }
-
-                    if($empleadoQuery[0][$i] == $dato1[0][0]){
-                        // echo 'son iguales';
-                    }
+                        #De esta forma accedemos a los datos que me trae la consulta alamcenada en la variable $newEmpleado
+                        // return $oldEmpleado['nombre'].'<br>'.$oldEmpleado['cargo'].'<br>'.$oldEmpleado['correo'];
                 }
                 
-                // return response()->json($empleadoQuery[0][1]);
                 
-                #insercion de datos en campos en especifico en la base de datos.
-                // $newEmpleado = new Empleado();
-                // $newEmpleado->identificacion = $dato1[$index][0];
-                // $newEmpleado->nombre = $dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3];
-                // $newEmpleado->cargo = $dato1[$index][4];
-                // $newEmpleado->correo = $dato1[$index][5];
-                // $newEmpleado->save();
+                // if(!isset($newEmpleado->identificacion)){
+                //     $newEmpleado = new Empleado();
+                //     $newEmpleado->identificacion = $dato1[$index][0];
+                //     $newEmpleado->nombre = $dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3];
+                //     $newEmpleado->cargo = $dato1[$index][4];
+                //     $newEmpleado->correo = $dato1[$index][5];
+                //     $newEmpleado->save();
+                // }
+                // return $newEmpleado;
+                
             }
 
         }
-        return $empleadoQuery[0][1];
+        // return $empleadoQuery[0][1];
         // return response()->json(array('msg'=>'ok'));
         
     }
