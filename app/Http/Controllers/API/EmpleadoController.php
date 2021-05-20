@@ -116,7 +116,7 @@ class EmpleadoController extends Controller
                 
                 # validamos con elnumero de identificacion si el registro del excel ya esta en la base de datos, y si no esta crea un registro nuevo.
                 #insercion de datos en campos en especifico en la base de datos.
-                $oldEmpleado = Empleado::where('identificacion', $dato1[$index][0])->first();
+                $newEmpleado   =   Empleado::where ( 'identificacion' , $  dato1 [ $  index ] [ 0 ]) ->  first ();
                 
                 switch(isset($newEmpleado->identificacion)){
                     case false:
@@ -130,13 +130,13 @@ class EmpleadoController extends Controller
                     case true:
                         
                         # por medio de estos condicionales anidados validamos si algun campo del registro recuperado de la base de datos es diferente, incluyendo campos nulos y si son nulos o diferentes los va a actualizar con los datos extraidos del excel.
-                        if($dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3] != $oldEmpleado['nombre']){
-                            $oldEmpleado->nombre = $dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3];
-                        }else if($dato1[$index][4] != $oldEmpleado['cargo']){
-                            $oldEmpleado->cargo = $dato1[$index][4];
-                        }else if($dato1[$index][5] != $oldEmpleado['correo']){
+                        if($dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3] != $newEmpleado['nombre']){
+                            $newEmpleado->nombre = $dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3];
+                        }else if($dato1[$index][4] != $newEmpleado['cargo']){
+                            $newEmpleado->cargo = $dato1[$index][4];
+                        }else if($dato1[$index][5] != $newEmpleado['correo']){
                             $newEmpleado->correo = $dato1[$index][5];
-                            $oldEmpleado->save();
+                            $newEmpleado-> save ();
                         }
 
                         #De esta forma accedemos a los datos que me trae la consulta alamcenada en la variable $newEmpleado
