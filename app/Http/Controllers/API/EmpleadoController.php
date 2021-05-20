@@ -118,7 +118,7 @@ class EmpleadoController extends Controller
                 #insercion de datos en campos en especifico en la base de datos.
                 $newEmpleado   =   Empleado::where ( 'identificacion' , $  dato1 [ $  index ] [ 0 ]) ->  first ();
                 
-                switch(isset($newEmpleado->identificacion)){
+                switch(¡isset($newEmpleado->identificacion)){
                     case false:
                         $newEmpleado = new Empleado();
                         $newEmpleado->identificacion = $dato1[$index][0];
