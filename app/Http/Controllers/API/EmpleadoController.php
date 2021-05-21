@@ -116,7 +116,7 @@ class EmpleadoController extends Controller
                 
                 # validamos con elnumero de identificacion si el registro del excel ya esta en la base de datos, y si no esta crea un registro nuevo.
                 #insercion de datos en campos en especifico en la base de datos.
-                $newEmpleado   =   Empleado::where ( 'identificacion' , $  dato1 [ $  index ] [ 0 ]) ->  first ();
+                $newEmpleado   =  Empleado::where( 'identificacion' , $dato1[$index][0])->first ();
                 
                 switch(isset($newEmpleado->identificacion)){
                     case false:
@@ -132,33 +132,24 @@ class EmpleadoController extends Controller
                         # por medio de estos condicionales anidados validamos si algun campo del registro recuperado de la base de datos es diferente, incluyendo campos nulos y si son nulos o diferentes los va a actualizar con los datos extraidos del excel.
                         if($dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3] != $newEmpleado['nombre']){
                             $newEmpleado->nombre = $dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3];
-                        }else if($dato1[$index][4] != $newEmpleado['cargo']){
-                            $newEmpleado->cargo = $dato1[$index][4];
-                        }else if($dato1[$index][5] != $newEmpleado['correo']){
-                            $newEmpleado->correo = $dato1[$index][5];
-                            $newEmpleado-> save ();
                         }
+                        if($dato1[$index][4] != $newEmpleado['cargo']){
+                            $newEmpleado->cargo = $dato1[$index][4];
+                        }
+                        if($dato1[$index][5] != $newEmpleado['correo']){
+                            $newEmpleado->correo = $dato1[$index][5];
+                        }
+                        $newEmpleado-> save ();
 
                         #De esta forma accedemos a los datos que me trae la consulta alamcenada en la variable $newEmpleado
                         // return $oldEmpleado['nombre'].'<br>'.$oldEmpleado['cargo'].'<br>'.$oldEmpleado['correo'];
                 }
                 
-                
-                // if(!isset($newEmpleado->identificacion)){
-                //     $newEmpleado = new Empleado();
-                //     $newEmpleado->identificacion = $dato1[$index][0];
-                //     $newEmpleado->nombre = $dato1[$index][1]." ".$dato1[$index][2]." ".$dato1[$index][3];
-                //     $newEmpleado->cargo = $dato1[$index][4];
-                //     $newEmpleado->correo = $dato1[$index][5];
-                //     $newEmpleado->save();
-                // }
-                // return $newEmpleado;
-                
             }
 
         }
-        // return $empleadoQuery[0][1];
-        // return response()->json(array('msg'=>'ok'));
+        
+        return response()->json(array('msg'=>'ok'));
         
     }
 
